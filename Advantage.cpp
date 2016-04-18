@@ -45,7 +45,7 @@ namespace Gaming
     double Advantage::consume()
     {
         double cap = getCapacity();
-        __capacity = -1;
+        __capacity = 0;
         finish();
         return cap;
     }

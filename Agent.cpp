@@ -18,7 +18,7 @@ namespace Gaming
     
     Agent::Agent(const Game &g, const Position &p, double energy):Piece(g, p)
     {
-        energy = __energy;
+        __energy = energy;
     }
     
     Agent::~Agent()
@@ -36,6 +36,7 @@ namespace Gaming
     
     Piece &Agent::operator*(Piece &other)
     {
+        
         Agent *agent = dynamic_cast<Agent*>(&other);
         if (agent)
         {
@@ -47,7 +48,7 @@ namespace Gaming
         }
         
         return *this;
-        
+      
     }
     
     Piece &Agent::interact(Agent *other)
