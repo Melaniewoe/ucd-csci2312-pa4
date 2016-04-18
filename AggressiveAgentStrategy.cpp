@@ -26,7 +26,7 @@ namespace Gaming
     }
     ActionType AggressiveAgentStrategy::operator()(const Surroundings &s) const
     {
-        std::vector<int> positions;
+        std::vector<int> pos;
         unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
         std::default_random_engine rnd(seed);
         
@@ -36,40 +36,40 @@ namespace Gaming
             {
                 if (s.array[i] == PieceType::SIMPLE || s.array[i] == PieceType::STRATEGIC)
                 {
-                    positions.push_back(i);
+                    pos.push_back(i);
                 }
             }
         }
         
-        if (positions.size() == 0)
+        if (pos.size() == 0)
         {
             for (int i = 0; i < 9; ++i)
             {
                 if (s.array[i] == PieceType::ADVANTAGE)
                 {
-                    positions.push_back(i);
+                    pos.push_back(i);
                 }
             }
         }
        
-        if (positions.size() == 0)
+        if (pos.size() == 0)
         {
             for (int i = 0; i < 9; ++i)
             {
                 if (s.array[i] == PieceType::FOOD)
                 {
-                    positions.push_back(i);
+                    pos.push_back(i);
                 }
             }
         }
         
-        if (positions.size() == 0)
+        if (pos.size() == 0)
         {
             for (int i = 0; i < 9; ++i)
             {
                 if (s.array[i] == PieceType::EMPTY)
                 {
-                    positions.push_back(i);
+                    pos.push_back(i);
                 }
             }
         }
@@ -77,29 +77,40 @@ namespace Gaming
         
         
         
-        if (positions.size() > 0)
+        if (pos.size() > 0)
         {
-            int posIndex = positions[rnd() % positions.size()];
-            if (positions.size() == 1) posIndex = positions[0];
+            int ind = pos[rnd() % pos.size()];
+            if (pos.size() == 1) ind = pos[0];
             
             
-            ActionType ac;
-            switch (posIndex) {
-                case 0: ac = NW; break;
-                case 1: ac = N; break;
-                case 2: ac = NE; break;
-                case 3: ac = W; break;
-                case 4: ac = STAY; break;
-                case 5: ac = E; break;
-                case 6: ac = SW; break;
-                case 7: ac = S; break;
-                case 8: ac = SE; break;
-                default: ac = STAY;
+            ActionType act;
+            switch (ind)
+            {
+                case 0: act = NW;
+                    break;
+                case 1: act = N;
+                    break;
+                case 2: act = NE;
+                    break;
+                case 3: act = W;
+                    break;
+                case 4: act = STAY;
+                    break;
+                case 5: act = E;
+                    break;
+                case 6: act = SW;
+                    break;
+                case 7: act = S;
+                    break;
+                case 8: act = SE;
+                    break;
+                default: act = STAY;
+
             }
             
-            return (ac);
+            return (act);
         }
         
-        return ActionType::STAY;
+        return STAY;
     }
 }

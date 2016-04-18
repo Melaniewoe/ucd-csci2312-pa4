@@ -37,6 +37,7 @@ namespace Gaming
     
     void Resource::age()
     {
+        
         __capacity -= RESOURCE_SPOIL_FACTOR;
         if (__capacity < 0.01)
         {
@@ -44,12 +45,13 @@ namespace Gaming
             finish();
             
         }
+         
     }
     
     
     ActionType Resource::takeTurn(const Surroundings &s) const
     {
-        return ActionType::STAY;
+        return STAY;
         
     }
     
