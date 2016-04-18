@@ -18,7 +18,7 @@ namespace Gaming
     
     AggressiveAgentStrategy::AggressiveAgentStrategy(double agentEnergy)
     {
-        agentEnergy = __agentEnergy;
+        __agentEnergy = agentEnergy;
     }
     AggressiveAgentStrategy::~AggressiveAgentStrategy()
     {
