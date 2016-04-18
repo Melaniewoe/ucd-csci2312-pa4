@@ -26,15 +26,13 @@ namespace Gaming
     
     double Resource::consume()
     {
-        double r = __capacity;
-        if (__capacity <= 0.0)
-        {
-        __capacity = 0.0;
+        
+        double cap = __capacity;
+        __capacity = -1;
         finish();
+        return cap;
         
-        }
-        return r;
-        
+
     }
     
     void Resource::age()
