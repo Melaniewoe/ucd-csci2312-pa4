@@ -14,7 +14,7 @@ namespace Gaming
 {
     void GamingException::setName(std::string name)
     {
-        name = __name;
+        __name = name;
     }
                 
                  
