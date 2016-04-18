@@ -6,9 +6,12 @@
 //
 
 #include <iostream>
+#include <sstream>
+
 #include "Strategic.h"
 
 
+using namespace  std;
 namespace Gaming
 {
     const char Strategic::STRATEGIC_ID = 'T';
@@ -26,13 +29,22 @@ namespace Gaming
     
     void Strategic::print(std::ostream &os) const
     {
+        stringstream ss;
+        string s;
+        s = to_string(__id);
+        ss << STRATEGIC_ID;
+        ss << s;
+        getline(ss, s);
+        for (int i = 0; i < s.length(); ++i)
+        {
+            os << s[i];
+        }
         
-        os << STRATEGIC_ID << __id;
     }
     
     ActionType Strategic::takeTurn(const Surroundings &s) const
     {
-        return (*this ->__strategy)(s);
+        return (*__strategy)(s);
     }
 
 }

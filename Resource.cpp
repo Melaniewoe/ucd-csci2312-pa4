@@ -39,10 +39,10 @@ namespace Gaming
     
     void Resource::age()
     {
-        __capacity /= RESOURCE_SPOIL_FACTOR;
+        __capacity -= RESOURCE_SPOIL_FACTOR;
         if (__capacity < 0.01)
         {
-            __capacity = 0.0;
+            //__capacity = 0.0;
             finish();
             
         }
@@ -51,7 +51,7 @@ namespace Gaming
     
     ActionType Resource::takeTurn(const Surroundings &s) const
     {
-        return STAY;
+        return ActionType::STAY;
         
     }
     

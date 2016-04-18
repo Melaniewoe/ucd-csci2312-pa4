@@ -8,6 +8,7 @@
 #include <iostream>
 #include "AggressiveAgentStrategy.h"
 #include "Game.h"
+#include <chrono>
 
 using namespace std;
 
@@ -25,167 +26,80 @@ namespace Gaming
     }
     ActionType AggressiveAgentStrategy::operator()(const Surroundings &s) const
     {
-        //int i = 0;
-        bool found = true;
-        ActionType act;
+        std::vector<int> positions;
+        unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+        std::default_random_engine rnd(seed);
         
-        for (int i = 0; i <9; i++)
+        if (__agentEnergy > DEFAULT_AGGRESSION_THRESHOLD)
         {
-            if (DEFAULT_AGGRESSION_THRESHOLD <= __agentEnergy && (s.array[i] == STRATEGIC || s.array[i] == SIMPLE))
+            for (int i = 0; i < 9; ++i)
             {
-                switch(i)
+                if (s.array[i] == PieceType::SIMPLE || s.array[i] == PieceType::STRATEGIC)
                 {
-                    case 0: act = N;
-                        found = false;
-                        break;
-                    case 1: act = NE;
-                        found = false;
-                        break;
-                    case 3: act = NW;
-                        found = false;
-                        break;
-                    case 4: act = E;
-                        found = false;
-                        break;
-                    case 5: act = S;
-                        found = false;
-                        break;
-                    case 6: act = SE;
-                        found = false;
-                        break;
-                    case 7: act = SW;
-                        found = false;
-                        break;
-                    case 8: act = E;
-                        found = false;
-                        break;
-                        
-                }
-                if (found == false)
-                {
-                    i = 9;
+                    positions.push_back(i);
                 }
             }
-            else if (DEFAULT_AGGRESSION_THRESHOLD <= __agentEnergy && (s.array[i] == ADVANTAGE))
-            {
-                switch(i)
-                {
-                    case 0: act = N;
-                        found = false;
-                        break;
-                    case 1: act = NE;
-                        found = false;
-                        break;
-                    case 3: act = NW;
-                        found = false;
-                        break;
-                    case 4: act = E;
-                        found = false;
-                        break;
-                    case 5: act = S;
-                        found = false;
-                        break;
-                    case 6: act = SE;
-                        found = false;
-                        break;
-                    case 7: act = SW;
-                        found = false;
-                        break;
-                    case 8: act = E;
-                        found = false;
-                        break;
-                        
-                }
-                if (found == false)
-                {
-                    i = 9;
-                }
-                
-            }
-            else if (DEFAULT_AGGRESSION_THRESHOLD <= __agentEnergy && (s.array[i] == FOOD))
-            {
-                switch(i)
-                {
-                    case 0: act = N;
-                        found = false;
-                        break;
-                    case 1: act = NE;
-                        found = false;
-                        break;
-                    case 3: act = NW;
-                        found = false;
-                        break;
-                    case 4: act = E;
-                        found = false;
-                        break;
-                    case 5: act = S;
-                        found = false;
-                        break;
-                    case 6: act = SE;
-                        found = false;
-                        break;
-                    case 7: act = SW;
-                        found = false;
-                        break;
-                    case 8: act = E;
-                        found = false;
-                        break;
-                        
-                }
-                if (found == false)
-                {
-                    i = 9;
-                }
-            }
-            else if (DEFAULT_AGGRESSION_THRESHOLD <= __agentEnergy && (s.array[i] == EMPTY))
-            {
-                switch(i)
-                {
-                    case 0: act = N;
-                        found = false;
-                        break;
-                    case 1: act = NE;
-                        found = false;
-                        break;
-                    case 3: act = NW;
-                        found = false;
-                        break;
-                    case 4: act = E;
-                        found = false;
-                        break;
-                    case 5: act = S;
-                        found = false;
-                        break;
-                    case 6: act = SE;
-                        found = false;
-                        break;
-                    case 7: act = SW;
-                        found = false;
-                        break;
-                    case 8: act = W;
-                        found = false;
-                        break;
-                        
-                }
-                if (found == false)
-                {
-                    i = 9;
-                }
-            }
-            
-            
-            
-            if (found == true)
-            {
-                act = STAY;
-            }
-            
-            
-            
-            
-            
         }
         
-        return act;
+        if (positions.size() == 0)
+        {
+            for (int i = 0; i < 9; ++i)
+            {
+                if (s.array[i] == PieceType::ADVANTAGE)
+                {
+                    positions.push_back(i);
+                }
+            }
+        }
+       
+        if (positions.size() == 0)
+        {
+            for (int i = 0; i < 9; ++i)
+            {
+                if (s.array[i] == PieceType::FOOD)
+                {
+                    positions.push_back(i);
+                }
+            }
+        }
+        
+        if (positions.size() == 0)
+        {
+            for (int i = 0; i < 9; ++i)
+            {
+                if (s.array[i] == PieceType::EMPTY)
+                {
+                    positions.push_back(i);
+                }
+            }
+        }
+       
+        
+        
+        
+        if (positions.size() > 0)
+        {
+            int posIndex = positions[rnd() % positions.size()];
+            if (positions.size() == 1) posIndex = positions[0];
+            
+            
+            ActionType ac;
+            switch (posIndex) {
+                case 0: ac = NW; break;
+                case 1: ac = N; break;
+                case 2: ac = NE; break;
+                case 3: ac = W; break;
+                case 4: ac = STAY; break;
+                case 5: ac = E; break;
+                case 6: ac = SW; break;
+                case 7: ac = S; break;
+                case 8: ac = SE; break;
+                default: ac = STAY;
+            }
+            
+            return (ac);
+        }
+        
+        return ActionType::STAY;
     }
 }

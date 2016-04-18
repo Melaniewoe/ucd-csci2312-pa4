@@ -36,7 +36,17 @@ namespace Gaming
     
     Piece &Agent::operator*(Piece &other)
     {
-        return other.interact(this);
+        Agent *agent = dynamic_cast<Agent*>(&other);
+        if (agent)
+        {
+            interact(agent);
+        }
+        Resource *res = dynamic_cast<Resource*>(&other);
+        if (res) {
+            interact(res);
+        }
+        
+        return *this;
         
     }
     

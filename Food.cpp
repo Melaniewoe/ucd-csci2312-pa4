@@ -7,6 +7,7 @@
 
 #include "Food.h"
 #include <iostream>
+#include <sstream>
 using namespace std;
 
 
@@ -34,7 +35,16 @@ namespace Gaming
         
     void Food::print(std::ostream &os) const
     {
-        os << FOOD_ID << __id;  //???????
+        stringstream ss;
+        string s;
+        s = to_string(__id);
+        ss << FOOD_ID << __id;
+        ss << s;
+        getline(ss,s);
+        for (int i = 0; i < s.length(); ++i)
+        {
+            os << s[i];
+        }
     }
  
     

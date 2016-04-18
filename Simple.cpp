@@ -6,6 +6,8 @@
 //
 
 #include <iostream>
+#include <sstream>
+
 #include "Simple.h"
 
 using namespace std;
@@ -27,7 +29,19 @@ namespace Gaming
     
     void Simple::print(std::ostream &os) const
     {
-        os << SIMPLE_ID <<__id;
+        stringstream ss;
+        string s;
+        s = to_string(__id);
+        ss << SIMPLE_ID;
+        ss << s;
+        
+        getline(ss, s);
+        
+        for (int i = 0; i < s.length(); ++i)
+        {
+            os << s[i];
+        }
+        
     }
     
     ActionType Simple::takeTurn(const Surroundings &s) const
@@ -81,7 +95,7 @@ namespace Gaming
             }
             return (act);
         }
-        return STAY;
+        return ActionType::STAY;
     }
 
 }

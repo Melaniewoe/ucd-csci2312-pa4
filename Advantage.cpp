@@ -6,7 +6,10 @@
 //
 
 #include <iostream>
+#include <sstream>
 #include "Advantage.h"
+
+using namespace std;
 
 namespace Gaming
 {
@@ -26,7 +29,13 @@ namespace Gaming
     
     void Advantage::print(std::ostream &os) const
     {
-        os << ADVANTAGE_ID <<__id;
+        stringstream ss;
+        
+        string s;
+        s = to_string(__id);
+        
+        ss << ADVANTAGE_ID;
+        ss << s;
     }
     
     double Advantage::getCapacity() const
@@ -36,7 +45,7 @@ namespace Gaming
     double Advantage::consume()
     {
         double cap = getCapacity();
-        __capacity = 0;
+        __capacity = -1;
         finish();
         return cap;
     }
