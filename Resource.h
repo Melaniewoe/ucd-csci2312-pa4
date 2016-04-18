@@ -10,7 +10,8 @@
 
 namespace Gaming {
 
-    class Resource : public Piece {
+    class Resource : public Piece
+    {
 
     protected:
         double __capacity;

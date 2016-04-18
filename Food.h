@@ -16,9 +16,14 @@ namespace Gaming {
 
     public:
         Food(const Game &g, const Position &p, double capacity);
+     
         ~Food();
+       
 
-        PieceType getType() const override { return PieceType::FOOD; }
+        PieceType getType() const override {
+            return PieceType::FOOD;
+        }
+       
 
         void print(std::ostream &os) const override;
     };
