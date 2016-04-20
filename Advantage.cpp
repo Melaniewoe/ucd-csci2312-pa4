@@ -13,12 +13,13 @@ using namespace std;
 
 namespace Gaming
 {
-    const double Advantage::ADVANTAGE_MULT_FACTOR = 2.0;
     const char Advantage::ADVANTAGE_ID = 'D';
+    const double Advantage::ADVANTAGE_MULT_FACTOR = 2.0;
+    
     
     Advantage::Advantage(const Game &g, const Position &p, double capacity):Resource(g, p, capacity)
     {
-        __capacity *=  ADVANTAGE_MULT_FACTOR;
+        //__capacity *=  ADVANTAGE_MULT_FACTOR;
     }
     Advantage::~Advantage()
     {
@@ -32,10 +33,10 @@ namespace Gaming
         stringstream ss;
         
         string s;
-        s = to_string(__id);
         
-        ss << ADVANTAGE_ID;
-        ss << s;
+        ss << ADVANTAGE_ID << __id;
+        getline(ss, s);
+        os << s;
     }
     
     double Advantage::getCapacity() const

@@ -7,6 +7,8 @@
 
 #include "Resource.h"
 
+using namespace std;
+
 namespace Gaming
 {
     
@@ -28,7 +30,7 @@ namespace Gaming
     {
         
         double cap = __capacity;
-        __capacity = -1;
+        __capacity = 0;
         finish();
         return cap;
         

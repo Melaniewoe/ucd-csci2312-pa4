@@ -8,7 +8,7 @@
 #include <iostream>
 #include "Agent.h"
 #include "Food.h"
-#include "Advantage.h"
+
 
 using namespace std;
 
@@ -43,7 +43,8 @@ namespace Gaming
             interact(agent);
         }
         Resource *res = dynamic_cast<Resource*>(&other);
-        if (res) {
+        if (res)
+        {
             interact(res);
         }
         

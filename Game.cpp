@@ -8,6 +8,8 @@
 
 #include <iostream>
 #include <iomanip>
+#include <sstream>
+#include <set>
 #include "Game.h"
 #include "Strategic.h"
 #include "Simple.h"
@@ -19,15 +21,17 @@ using namespace std;
 
 namespace Gaming
 {
+    const unsigned int Game::NUM_INIT_AGENT_FACTOR = 4;
+    const unsigned int Game::NUM_INIT_RESOURCE_FACTOR =2;
     const unsigned Game::MIN_WIDTH = 3;
-    const unsigned Game::MIN_HEIGHT = 3;;
+    const unsigned Game::MIN_HEIGHT = 3;
     const double Game::STARTING_AGENT_ENERGY = 20;
     const double Game::STARTING_RESOURCE_CAPACITY = 10;
-    const unsigned int Game::NUM_INIT_AGENT_FACTOR = 4;
-    const unsigned int Game::NUM_INIT_RESOURCE_FACTOR  =2;
     
     PositionRandomizer Game::__posRandomizer = PositionRandomizer();
     
+    
+     
     void Game::populate()  // populate the grid (used in automatic random initialization of a Game)
     {
         default_random_engine gen;
@@ -86,20 +90,25 @@ namespace Gaming
             }
         }
     }
-
+    
+    
     Game::Game() : __width(3), __height(3)
     {
+        
+        
+        
         __numInitAgents = 0;
         __numInitResources = 0;
         
         __status = NOT_STARTED;
         __verbose = false;
         __round = 0;
-        
-        for (int count = 0; count < __height * __width; count++)
+       
+        for (unsigned count = 0; count < __height * __width; ++count)
         {
             __grid.push_back(nullptr);
         }
+        
         
     }
     
@@ -129,8 +138,8 @@ namespace Gaming
             populate();
         }
     }
-   
-   // Game &operator=(const Game &) = delete;
+    
+      // Game &operator=(const Game &) = delete;
     Game::~Game()
     {
         for (int i = 0; i < __grid.size(); i++)
@@ -145,15 +154,37 @@ namespace Gaming
     // getters
     //unsigned int getWidth() const { return __width; }
     //unsigned int getHeight() const { return __height; }
+   
     unsigned int Game::getNumPieces() const
     {
-        return getNumResources() + getNumAgents();
+        int numPieces = 0;
+        for (auto i = __grid.begin(); i != __grid.end(); ++i)
+        {
+            if (*i != nullptr)
+            {
+                numPieces++;
+            }
+        }
+        
+        return numPieces;
     }
     unsigned int Game::getNumAgents() const
     {
-        return  getNumStrategic() + getNumSimple();
+        int numAgents = 0;
+        
+        for (auto i = __grid.begin(); i != __grid.end(); ++i)
+        {
+            Agent *a = dynamic_cast<Agent*>(*i);
+            if (a)
+            {
+               numAgents++;
+            }
+        }
+        
+        return numAgents;
     }
-    
+  
+   
     unsigned int Game::getNumSimple() const
     {
         unsigned int Num = 0;
@@ -162,10 +193,10 @@ namespace Gaming
             if(__grid[i] != nullptr)
             {
         
-            if (__grid[i] -> getType() == SIMPLE)
-            {
-                Num++;
-            }
+                if (__grid[i] -> getType() == SIMPLE)
+                {
+                    Num++;
+                }
             }
             
         }
@@ -186,6 +217,7 @@ namespace Gaming
         }
         return Num;
     }
+    
     unsigned int Game::getNumResources() const
     {
         unsigned int Num = 0;
@@ -203,31 +235,32 @@ namespace Gaming
     }
     //Status getStatus() const { return __status; }
     //unsigned int getRound() const { return __round; }
+    
     const Piece *Game::getPiece(unsigned int x, unsigned int y) const
     {
         if (y >= __width || x >= __height)
         {
             throw OutOfBoundsEx(__width, __height, x, y);
         }
-        if (__grid[y + (x * __width)] == nullptr)
+        if (__grid[x * __width + y] == nullptr)
         {
             throw PositionEmptyEx(x, y);
         }
-        return __grid[y + (x * __width)];
+        return __grid[x * __width + y];
         
         
     }
-    
-    
+ 
+
     // grid population methods
     void Game::addSimple(const Position &position)
     {
        
-        if ((position.x*__width + position.y) > __grid.size())
+        if (position.x >= __height || position.y >= __width)
         {
             throw OutOfBoundsEx(__width, __height, position.x, position.y);
         }
-        if (__grid[position.x * __width + position.y] != nullptr)
+        if (__grid[position.x * __width + position.y])
         {
             throw PositionNonemptyEx(position.x, position.y);
         }
@@ -237,36 +270,35 @@ namespace Gaming
     }
     
     
-    void Game::addSimple(const Position &position, double energy) // used for testing only
+    void Game::addSimple(const Position &position, double energy)  // used for testing only
     {
-       
-        if ((position.x*__width + position.y) > __grid.size())
+    
+        if (position.x >= __height || position.y >= __width)
         {
-            throw OutOfBoundsEx(__width, __height, position.x, position.y);
+           throw OutOfBoundsEx(__width, __height, position.x, position.y);
         }
-        if (__grid[position.x * (__width + position.y)] != nullptr)
+        if ( __grid[position.x * __width + position.y])
         {
             throw PositionNonemptyEx(position.x, position.y);
-            
-            
         }
-        __grid[position.x * (__width + position.y)] = new Simple(*this, position,energy);
+        
+        __grid[position.x * __width + position.y] = new Simple(*this, position, energy);
     }
-    
-    
-    
+
+ 
      void Game::addSimple(unsigned x, unsigned y)
      {
-     Position p(x,y);
-     this->addSimple(p);
+         Position p(x,y);
+         this->addSimple(p);
      }
      
      void Game::addSimple(unsigned x, unsigned y, double energy)
      {
-     Position p(x,y);
-     this->addSimple(p,energy);
+         Position p(x,y);
+         this->addSimple(p,energy);
      }
-    
+
+
     
     void Game::addStrategic(const Position &position, Strategy *s)
     {
@@ -359,7 +391,7 @@ namespace Gaming
         }
         return temp;
     }
-    
+ 
     // gameplay methods
     const ActionType Game::reachSurroundings(const Position &from, const Position &to) // note: STAY by default
     {
@@ -396,6 +428,7 @@ namespace Gaming
     }
  
     
+    
     bool Game::isLegal(const ActionType &ac, const Position &pos) const
     {
         int x, y;
@@ -428,7 +461,9 @@ namespace Gaming
         }
         Position p((unsigned )x, (unsigned)y);
         if (p.y < __width  && p.x < __height )
+        {
             return true;
+        }
         return false;
     }
     
@@ -436,11 +471,13 @@ namespace Gaming
     const Position Game::move(const Position &pos, const ActionType &ac) const // note: assumes legal, use with isLegal()
     {
         
-        if (isLegal(ac, pos)) {
+        if (isLegal(ac, pos))
+        {
             int x, y;
             x = pos.x;
             y = pos.y;
-            switch (ac) {
+            switch (ac)
+            {
                 case E: y++;
                     break;
                 case NE: y++;
@@ -464,6 +501,7 @@ namespace Gaming
                 default:
                     break;
             }
+            
             Position p((unsigned )x, (unsigned)y);
             return p;
             
@@ -471,85 +509,102 @@ namespace Gaming
         return pos;
         
     }
-    void Game::round()  // play a single round
-    {
+ 
+    void Game::round() {
         
-        bool lost = false;
-        bool win = false;
-       
-        ActionType act;
-        Position pos;
-        
-        if (__status == NOT_STARTED)
+        if( __verbose && __round == 0)
         {
-            __status = PLAYING;
-        }
-        for (int i = 0; i < __grid.size(); i++)
-        {
-            if (!__grid[i] -> getTurned())
-            {
-                act = __grid[i] -> takeTurn(getSurroundings(__grid[i] -> getPosition()));
-                __grid[i] -> setTurned(true);
-                pos = move(__grid[i] -> getPosition(), act);
-            }
-            else if (__grid[pos.x * (__width + pos.y)]!= nullptr)
-            {
-                (*__grid[pos.x * (__width +pos.y)]) * *__grid[i];
-                if (!__grid[i] -> isViable())
-                {
-                    delete __grid[i];
-                    lost = true;
-                }
-                else if (!__grid[pos.x * (__width +pos.y)] -> isViable())
-                {
-                    delete __grid[pos.x * (__width +pos.y)];
-                    win = true;
-                }
-            }
+            __status = Status::PLAYING;
             
-            if (lost && win)
-                __grid[pos.x * (__width +pos.y)] = nullptr;
-            if (!lost)
-                __grid[pos.x * (__width +pos.y)] = __grid[i];
-            if (act != STAY)
-                __grid[i] = nullptr;
         }
-        for (int i = 0; i < __grid.size(); i++)
+        
+        for (int count = 0; count < __grid.size(); ++count)
         {
-            if (__grid[i] != nullptr)
+            if(__grid[count]!= nullptr && ! __grid[count]->getTurned() && __grid[count]->isViable() )
             {
-                __grid[i] -> age();
-                __grid[i] -> setTurned(false);
-                if (!__grid[i] -> isViable())
+               
+                    Agent *a = dynamic_cast<Agent*>(__grid[count]);
+                
+                    if(a)
+                    {
+                        __grid[count]->setTurned(true);
+                        
+                        Position p = __grid[count]->getPosition();
+                        Surroundings s = getSurroundings(p);
+                        ActionType act = __grid[count]->takeTurn(s);
+                        
+                        
+                        if (act != STAY)
+                        {
+                            Position newp = move(p, act);
+                            int i = (newp.x * __width + newp.y);
+                            
+                            (*__grid[count]) * (*__grid[i]);
+                            
+                           
+                                
+                            if(! __grid[count]->isViable())
+                            {
+                                delete __grid[count];
+                                __grid[count]= nullptr;
+                            }
+                                
+                            else
+                            {
+                                __grid[count]->setPosition(newp);
+                                    
+                                if (__grid[i] == nullptr)
+                                {
+                                    __grid[i] = __grid[count];
+                                    __grid[count] = nullptr;
+                                }
+                                    
+                                else
+                                {
+                                    delete __grid[i];
+                                    __grid[i] = __grid[count];
+                                    __grid[count] = nullptr;
+                                    
+                                }
+                            }
+                                
+                            if(! __grid[i]->isViable())
+                            {
+                                delete __grid[i];
+                                __grid[i]= nullptr;
+                            }
+                        }
+                     
+                }
+            }
+        }
+        for (int i = 0; i < __grid.size(); ++i)
+        {
+            if(__grid[i] != nullptr)
+            {
+                if (__grid[i]->isViable())
+                {
+                    __grid[i]->setTurned(false);
+                    __grid[i]->age();
+                    
+                }
+                else
                 {
                     delete __grid[i];
+                    __grid[i] = nullptr;
                 }
             }
         }
         
-        if (getNumResources() <= 0)
+        if(getNumResources() < 1)
         {
-            __status = OVER;
+            __status = Status::OVER;
         }
         
         __round++;
-    }
-    void Game::play(bool verbose)   // play game until over
-    {
-        verbose = __verbose;
-         __status = PLAYING;
         
-        while (__status != 0)
-        {
-            round();
-        }
-        if (getNumResources() >0 && getNumPieces() > 1)
-        {
-            play(verbose);
-        }
-        
+       
     }
-    
     //        const Agent &winner(); // what if no winner or multiple winners?
     
     // Print as follows the state of the game after the last round:
@@ -566,23 +621,62 @@ namespace Gaming
     // [     ][     ][     ]
     // Status: Over!
     //
-     
-     
-    std::ostream &operator<<(std::ostream &os, const Game &game)
+   
+    void Game::play(bool verbose)    // play game until over
     {
-        os << "Round " << game.__round << endl;
-        for(int w = 0; w < game.__width ; w++)
+        __status = PLAYING;
+        __verbose = verbose;
+        
+        cout << *this;
+        
+        while (__status != OVER)
         {
-            for(int h = 0; h < game.__height; h++)
+            round();
+            if (verbose)
             {
-                os << setw(5) << left << *(game.__grid[h *(game.__width + w)]);
-               
-            
+                cout << *this;
             }
             
-            os << endl;
-            
+            else if (!verbose)
+            {
+               cout << *this;
+            }
         }
+        
+        
+    }
+    
+    std::ostream &operator<<(std::ostream &os, const Game &game)
+    {
+        
+        os << "Round " << game.__round << std::endl;
+        int i = 0;
+        
+        for (auto gam = game.__grid.begin(); gam != game.__grid.end(); ++gam)
+        {
+            if (*gam == nullptr)
+            {
+                os << "[" << setw(6) << "]";
+            } else
+            {
+                
+                stringstream s;
+                string str;
+                
+                
+                s << "[" << **gam;
+                getline(s, str);
+                os << str << "]";
+                
+            }
+            
+            if (++i == game.__width)
+            {
+                i = 0;
+                os << std::endl;
+            }
+        }
+        
         
         if (game.__status == Game::NOT_STARTED)
         {
@@ -598,7 +692,7 @@ namespace Gaming
         }
         return os;
     }
-   
-  
+
+
+
 }
- 

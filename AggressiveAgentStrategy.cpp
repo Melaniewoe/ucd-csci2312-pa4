@@ -5,6 +5,7 @@
 //  Copyright © 2016 Melanie Woe. All rights reserved.
 //
 
+
 #include <iostream>
 #include "AggressiveAgentStrategy.h"
 #include "Game.h"
@@ -26,9 +27,10 @@ namespace Gaming
     }
     ActionType AggressiveAgentStrategy::operator()(const Surroundings &s) const
     {
-        std::vector<int> pos;
-        unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
-        std::default_random_engine rnd(seed);
+        vector<int> pos;
+        //unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+        unsigned int seed;
+        default_random_engine rnd(seed);
         
         if (__agentEnergy > DEFAULT_AGGRESSION_THRESHOLD)
         {

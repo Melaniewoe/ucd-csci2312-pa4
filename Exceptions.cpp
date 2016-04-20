@@ -5,6 +5,7 @@
 //  Copyright © 2016 Melanie Woe. All rights reserved.
 //
 
+
 #include <iostream>
 #include "Exceptions.h"
 
@@ -12,19 +13,19 @@ using namespace std;
 
 namespace Gaming
 {
-    void GamingException::setName(std::string name)
+
+    void GamingException::setName(string name)
     {
         __name = name;
     }
                 
-                 
+
     std::ostream &operator<<(std::ostream &os, const GamingException &ex)
     {
-        os << ex.__name << endl;
-        ex.__print_args(os);
+        os << ex.__name<< endl;
         return os;
     }
-    
+
     DimensionEx::DimensionEx(unsigned expWidth, unsigned expHeight, unsigned width, unsigned height)
     {
        
@@ -35,6 +36,7 @@ namespace Gaming
         setName("DimensionEx");
         
     }
+
     unsigned DimensionEx::getExpWidth() const
     {
         return __exp_width;
@@ -54,8 +56,9 @@ namespace Gaming
     
     void InsufficientDimensionsEx::__print_args(std::ostream &os) const
     {
+        os <<"Name: " << __name << endl;
         os << "Minimum height: " << getExpHeight() << "minimum width: " << getExpWidth() << endl;
-        os << "Height: " << getWidth() << "Height: " << getHeight() << endl;
+        os << "Width: " << __width << "Height: " << __height << endl;
     }
     
     
@@ -66,24 +69,28 @@ namespace Gaming
     
     void OutOfBoundsEx::__print_args(ostream &os) const
     {
+        os <<"Name: " << __name << endl;
         os << "Minimum height: " << getExpHeight() << "minimum width: " << getExpWidth() << endl;
-        os << "Height: " << getWidth() << "Height: " << getHeight() << endl;
+        os << "Width: " << __width << "Height: " << __height << endl;
+        
     }
     
-    OutOfBoundsEx::OutOfBoundsEx(unsigned maxWidth, unsigned maxHeight, unsigned width, unsigned height ): DimensionEx(maxWidth, maxHeight, width, height)
+    OutOfBoundsEx::OutOfBoundsEx(unsigned maxWidth, unsigned maxHeight, unsigned width, unsigned height):
+    DimensionEx(maxWidth, maxHeight, width, height)
     {
-        setName(" OutOfBoundsEx");
+        setName("OutOfBoundsEx");
     }
     
     void PositionEx::__print_args(std::ostream &os) const
     {
+        os << "Name: " << __name << endl;
         os << "x" << __x << "y " << __y << endl;
     }
     PositionEx::PositionEx(unsigned x, unsigned y)
     {
-        x= __x;
-        y= __y;
-        //setName("PositionEx");
+        __x = x;
+        __y = y;
+        setName("PositionEx");
     }
     PositionNonemptyEx::PositionNonemptyEx(unsigned x, unsigned y):PositionEx(x,y)
     {
@@ -105,3 +112,5 @@ namespace Gaming
     
     
 }
+
+

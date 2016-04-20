@@ -35,16 +35,11 @@ namespace Gaming
         
     void Food::print(std::ostream &os) const
     {
-        stringstream ss;
         string s;
-        s = to_string(__id);
+        stringstream ss;
         ss << FOOD_ID << __id;
-        ss << s;
-        getline(ss,s);
-        for (int i = 0; i < s.length(); ++i)
-        {
-            os << s[i];
-        }
+        getline (ss, s);
+        os << s;
     }
  
     

@@ -25,9 +25,10 @@ namespace Gaming
     ActionType DefaultAgentStrategy::operator()(const Surroundings &s) const
     {
        
-        std::vector<int> pos;
-        unsigned int seed = (unsigned int)std::chrono::system_clock::now().time_since_epoch().count();
-        std::default_random_engine rnd(seed);
+        vector<int> pos;
+        //unsigned int seed = (unsigned int)std::chrono::system_clock::now().time_since_epoch().count();
+        unsigned int seed;
+        default_random_engine rnd(seed);
      
         for (int i = 0; i < 9; ++i)
         {

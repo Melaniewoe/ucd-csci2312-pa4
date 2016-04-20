@@ -8,6 +8,8 @@
 #include <iostream>
 #include "Piece.h"
 
+using namespace std;
+
 namespace Gaming
 {
     unsigned int Piece::__idGen = 1000;
@@ -18,6 +20,7 @@ namespace Gaming
         __finished = false;
         __turned = false;
         __id = __idGen++;
+        
     }
     Piece::~Piece()
     {
@@ -28,8 +31,11 @@ namespace Gaming
     
     std::ostream &operator<<(std::ostream &os, const Piece &piece)
     {
+        
         piece.print(os);
+        
         
         return os;
     }
 }
+ 
