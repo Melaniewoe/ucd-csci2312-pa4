@@ -31,8 +31,7 @@ namespace Gaming
     {
         stringstream ss;
         string s;
-        s = to_string(__id);
-        ss << SIMPLE_ID;
+        ss << SIMPLE_ID << __id;
         ss << s;
         
         getline(ss, s);
@@ -47,11 +46,13 @@ namespace Gaming
     ActionType Simple::takeTurn(const Surroundings &s) const
     {
         std::vector<int> pos;
-        unsigned seed = chrono::system_clock::now().time_since_epoch().count();
+        unsigned seed;
         std::default_random_engine rnd(seed);
         
-        for (int i = 0; i < 9; ++i) {
-            if (s.array[i] == PieceType::ADVANTAGE || s.array[i] == PieceType::FOOD) {
+        for (int i = 0; i < 9; ++i)
+        {
+            if (s.array[i] == PieceType::ADVANTAGE || s.array[i] == PieceType::FOOD)
+            {
                 pos.push_back(i);
                 
             }
@@ -75,21 +76,30 @@ namespace Gaming
             if (pos.size() == 1) i = pos[0];
             
             
-            ActionType ac;
+            ActionType act;
             switch (i)
             {
-                case 0: ac = NW; break;
-                case 1: ac = N; break;
-                case 2: ac = NE; break;
-                case 3: ac = W; break;
-                case 4: ac = STAY; break;
-                case 5: ac = E; break;
-                case 6: ac = SW; break;
-                case 7: ac = S; break;
-                case 8: ac = SE; break;
-                default: ac = STAY;
+                case 0: act = NW;
+                    break;
+                case 1: act = N;
+                    break;
+                case 2: act = NE;
+                    break;
+                case 3: act = W;
+                    break;
+                case 4: act = STAY;
+                    break;
+                case 5: act = E;
+                    break;
+                case 6: act = SW;
+                    break;
+                case 7: act = S;
+                    break;
+                case 8: act= SE;
+                    break;
+                default: act = STAY;
             }
-            return (ac);
+            return (act);
         }
         
         return ActionType::STAY;

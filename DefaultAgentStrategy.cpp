@@ -26,7 +26,6 @@ namespace Gaming
     {
        
         vector<int> pos;
-        //unsigned int seed = (unsigned int)std::chrono::system_clock::now().time_since_epoch().count();
         unsigned int seed;
         default_random_engine rnd(seed);
      
